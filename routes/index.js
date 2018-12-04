@@ -13,20 +13,20 @@ router.get('/', function(req, res, next) {
 //______________________________________________________
 
 //Logica aplicacion.
-router.get('/get_temp_agua_user', function(req, res, next) {
-  estado.findOne({id_equipo: req.query.id})
+router.get('/historial', function(req, res, next) {
+  estado.find({id_equipo: req.query.id})
   .sort({arrive: 'desc'})
   .exec(function(err, estado_){
     if(estado_){
-      return res.status(200).send({temp: estado_.temp, fecha: estado_.fecha});
+      return res.status(200).send({estados: estado_});
     }else{
       return res.status(404).send('no se encuentra');
     }
   });
 });
 
-router.get('/set_temp_agua_user', function(req, res, next){
-  equipo.findOne({id_usuario: req.query.id})
+router.get('/set_temp_equipo', function(req, res, next){
+  equipo.findOne({_id: req.query.id})
   .exec(function(err, equipo_){
     if(equipo_){
       equipo_.temp_user = req.query.new_temp;
@@ -41,14 +41,11 @@ router.get('/set_temp_agua_user', function(req, res, next){
 //______________________________________________________
 
 //Logica aparato.
-router.get('/set_temp_agua_equipo', function(req, res, next) {
-  //subir datos a bdd
-  let body = req.body;
-  body.temp = req.temp;
-  body.id_equipo = req.id_equipo;
-  estado.create(body, (err, estado_) =>{
+router.get('/up_equipo', function(req, res, next) {
+  estado.create({id_equipo: req.query.id, num: 1, temp: req.query.temp}, (err, estado_) =>{
         if(err) throw err;
         if(estado_){
+          console.log(estado_)
           return res.status(200).send('ok');
         }else{
           return res.status(500).send('err');
@@ -56,85 +53,32 @@ router.get('/set_temp_agua_equipo', function(req, res, next) {
   });
 });
 
-router.get('/get_temp_agua_equipo', function(req, res, next){
-    equipo.findOne({_id: req.query.id})
-    .exec(function(err, equipo_){
-      if(equipo_){
-        return res.status(200).send({temp: equipo_.temp_user});
-      }else{
-        return res.status(404).send("No se encuentra");
-      }
-    })
+router.get('/crear_equipo', (req, res, next) => {
+  equipo.create({num: 1}, (err, equipo) => {
+    if(err) throw err;
+    if(equipo){
+      return res.status(200).send(equipo);
+    }else{
+      return res.status(500).send('error fatal');
+    }
+  })
+})
+
+router.get('/get_data_equipo', function(req, res, next) {
+  //subir datos a bdd
+  equipo.findOne({_id: req.query.id})
+  .exec(function(err, equipo_){
+    if(equipo_){
+      return res.status(200).send({temp: equipo_.temp_user});
+    }else{
+      return res.status(404).send("No se encuentra");
+    }
+  })
 });
+
   //logica obtener temperatura definida por el usuario
-
-//Logicas de creacion
-router.get('/crear_equipo', function(req, res, next){
-    let body = req.body;
-    body.id_usuario = req.query.id_usuario;
-    body.num = '1';
-    equipo.create(body, (err, equipo_) => {
-      if(equipo_){
-        return res.status(200).send(equipo_);
-      }else{
-        return res.status(500).send('err');
-      }
-    });
-});
-
-router.get('/crear_usuario', function(req, res, next){
-    let body = req.body;
-    body.nombre = req.query.nombre;
-    body.pass = req.query.pass;
-
-    usuario.create(body, (err, usuario_) => {
-      if(err) throw err;
-      if(usuario_){
-        return res.status(200).send(usuario_);
-      }else{
-        return res.status(500).send('err');
-      }
-    });
-});
-
-router.get('/get_usuario', function(req, res, next){
-  usuario.findOne({
-    _id: req.query.id
-  }).exec(function(err, usuario_){
-    if(usuario_){
-      return res.status(200).send(usuario_);
-    }else{
-      return res.status(404).send("no se encuentra");
-    }
-  })
-});
-
-router.get('/get_equipo', function(req, res, next){
-  equipo.findOne({
-    _id: req.query.id
-  }).exec(function(err, equipo_){
-    if(equipo_){
-      return res.status(200).send(equipo_);
-    }else{
-      return res.status(404).send("no se encuentra");
-    }
-  })
-});
-
-router.get('/get_equipos', function(req, res, next){
-  equipo.find().exec(function(err, equipo_){
-    if(equipo_){
-      return res.status(200).send(equipo_);
-    }else{
-      return res.status(404).send("no se encuentra");
-    }
-  })
-});
-
 router.get('/get_estados', function(req, res, next){
-  estado.find({
-    _id: req.query.id
-  }).exec(function(err, estados_){
+  estado.find().exec(function(err, estados_){
     if(estados_){
       return res.status(200).send(estados_);
     }else{

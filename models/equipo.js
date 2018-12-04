@@ -6,9 +6,7 @@ var Schema = mongoose.Schema;
 
 var equipoSchema = mongoose.Schema({
     temp_user: {type: Number},
-    id_usuario: {type: Schema.Types.ObjectId, ref: 'usuario'},
-    num: {type: String}
-
+    num: {type: Number}
 });
 
 module.exports = mongoose.model('equipo',  equipoSchema);
