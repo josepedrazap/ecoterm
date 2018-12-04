@@ -8,21 +8,16 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
 
-    <p>Ya tobal, aca esta la api.</p>
-    <h6>API app:</h6>
-    <p>/get_temp_agua_user?id=id_del_equipo ; devuelve la ultima temperatura registrada por el equipo.</p>
-    <p>/set_temp_agua_user?id=id_del_usuario ; setea la temperatura querida por el usuario.</p>
-    <p>/get_estados?id=id_equipo ; devuelve todas las temperaturas registradas por el equipo</p>
-
-    <h6>API equipo:</h6>
-    <p>/set_temp_agua_equipo?id=id_del_equipo&temp=_temp_ ; setea el estado de temperatura capturada por el equipo</P>
-    <p>/get_temp_agua_equipo?id=id_equipo ; obtiene la temperatura deseada seteada por el usuario.</p>
-
-    <h6>Otros métodos</h6>
-    <p>/crear_equipo?id_usuario=id_del_usuario&temp=_temp_deseada_usuario_ ; crea el equipo</p>
-    <p>/crear_usuario?nombre=_nombre_&pass=_pass_ ; crea el usuario</p>
-    <p>/get_equipos ; devuelve todos los equipos registrados</p>
-    <p></p>
-
   </body>
 </html>
+<script src="/javascripts/qr_render/jquery.min.js"></script>
+<script src="/javascripts/socket.io/socket.io.js"></script>
+
+<script>
+$(function (){
+        socket = io();
+        socket.on('app', function(msg){
+              alert(msg);
+        })
+});
+</script>

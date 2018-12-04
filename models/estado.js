@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 
 var estadoSchema = mongoose.Schema({
     temp: {type: Number},
+    temp_termo: {type: Number},
     fecha: {type: Date, default: Date.now},
     num: {type: Number},
     id_equipo: {type: Schema.Types.ObjectId, ref: 'equipo'}

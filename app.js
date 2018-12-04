@@ -11,6 +11,10 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 // view engine setup
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -27,6 +31,13 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+//middleware para gestionar sockets io
+app.use(function(req, res, next){
+  res.io = io;
+  next();
+});
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -47,4 +58,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = {app: app, server: server};
