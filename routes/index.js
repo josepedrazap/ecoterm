@@ -10,6 +10,19 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'EcoTerm' });
 });
 
+io.on('connection', function(socket){
+  socket.on('app_set', function(msg){
+    equipo.findOne({_id: "5c06c71b19cb9e1c198dbce2"})
+    .exec(function(err, equipo_){
+      if(equipo_){
+        equipo_.temp_user = parseInt(msg);
+        equipo_.save();
+        console.log('cambiado!!!!')
+      }
+    })
+  });
+});
+
 //______________________________________________________
 //______________________________________________________
 
