@@ -3,7 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var equipo = require('./models/equipo');
+var estado  = require('./models/estado');
+var usuario  = require('./models/usuario');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -38,6 +40,18 @@ app.use(function(req, res, next){
   next();
 });
 
+io.on('connection', function(socket){
+  socket.on('app_set', function(msg){
+    equipo.findOne({_id: "5c06c71b19cb9e1c198dbce2"})
+    .exec(function(err, equipo_){
+      if(equipo_){
+        equipo_.temp_user = parseInt(msg);
+        equipo_.save();
+        console.log('cambiado!!!!')
+      }
+    })
+  });
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
